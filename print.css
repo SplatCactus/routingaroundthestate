@@ -1,0 +1,225 @@
+/* PRINT STYLESHEET
+   Linked via <link media="print"> — these rules apply only during printing.
+   Goal: clean, readable one-page handout from the full page content.
+*/
+
+/* ─── Kill all motion, decoration, and backgrounds ──────────────────── */
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* ─── Force all content visible ──────────────────────────────────────
+   The reveal system sets opacity: 0 on elements until they scroll into
+   view. If the user prints without scrolling, unvisited sections are
+   invisible. This override makes everything print regardless.
+────────────────────────────────────────────────────────────────────── */
+.reveal,
+.prose p {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ─── Base typography ─────────────────────────────────────────────── */
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #000;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+
+* {
+  color: #000 !important;
+}
+
+/* Headings: screen sizes reduced ~20% for print */
+h1 { font-size: 22pt !important; line-height: 1.2 !important; }
+h2 { font-size: 16pt !important; margin-bottom: 0.4em !important; }
+h3 { font-size: 12pt !important; }
+
+/* ─── Section layout ──────────────────────────────────────────────── */
+.section {
+  padding-block: 1.2rem !important;
+  border-top: 0.5pt solid #ccc !important;
+}
+
+.section--hero {
+  min-height: 0 !important;
+  padding-block: 1.5rem !important;
+  text-align: left !important;
+}
+
+.section__inner {
+  max-width: none !important;
+  padding-inline: 0 !important;
+}
+
+.section__header {
+  margin-bottom: 0.8rem !important;
+}
+
+/* Restore section-label accent rule (background-strip kills it otherwise) */
+.section__label::before {
+  content: '' !important;
+  display: block !important;
+  width: 2rem !important;
+  height: 0 !important;
+  border-top: 2pt solid #C0392B !important;
+  margin-bottom: 0.4rem !important;
+}
+
+/* Drop cap: readable at print size, no giant float */
+#issue .prose p:first-child::first-letter {
+  float: none !important;
+  font-size: 1em !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #000 !important;
+}
+
+/* ─── Restore accent color where it matters ───────────────────────── */
+.stat-item__num {
+  color: #C0392B !important;
+}
+
+.pullquote {
+  border-left: 3pt solid #C0392B !important;
+  padding-left: 1em !important;
+  margin-block: 0.8rem !important;
+}
+
+.pullquote__text {
+  font-size: 13pt !important;
+}
+
+/* Stat block: fix border colors that can wash out from theme vars */
+.stat-block {
+  border-top: 0.5pt solid #999 !important;
+  border-bottom: 0.5pt solid #999 !important;
+}
+
+.stat-item + .stat-item {
+  border-left: 0.5pt solid #999 !important;
+  border-top: none !important;
+}
+
+/* ─── Print-only thesis summary ──────────────────────────────────── */
+.print-summary {
+  display: block;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5pt solid #ccc;
+}
+.thesis-card {
+  border-left: 3pt solid #C0392B !important;
+  padding: 0.8rem 1rem !important;
+  margin-bottom: 0 !important;
+}
+.thesis-label {
+  display: block;
+  font-size: 8pt !important;
+  color: #C0392B !important;
+  letter-spacing: 0.10em;
+  margin-bottom: 0.3rem;
+}
+.thesis-statement {
+  font-size: 11pt !important;
+  font-style: italic;
+}
+
+/* ─── Hidden elements ─────────────────────────────────────────────── */
+.site-header,        /* top nav bar */
+.skip-link,
+.progress-bar,
+#theme-toggle,
+.hero__scroll-cue,   /* bounce chevron */
+.hero__actions,      /* "Donate Now" + "Learn more" CTAs in hero */
+.amount-selector,    /* $5/$10/$25/$50/Other button UI */
+.qr-donate-slot,     /* mobile QR slot inside donate section */
+.share-block,        /* copy/X/email share buttons */
+.donate__secondary,  /* legacy share placeholder */
+.donate__closing,    /* "chains" quote line */
+.flow-diagram,       /* interactive accordion */
+.flow-explainer,     /* "Why this matters" toggle */
+.faq,                /* FAQ accordion — prose already covers the legal points */
+.qr-float,           /* desktop floating QR */
+.footer__nav {       /* footer anchor links */
+  display: none !important;
+}
+
+/* ─── Page breaks ─────────────────────────────────────────────────── */
+#theory {
+  page-break-before: always;
+  break-before: page;
+}
+
+#legal {
+  page-break-before: always;
+  break-before: page;
+}
+
+.section__header,
+.stat-block,
+.pullquote,
+.feature-item,
+.note-block {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+h2, h3 {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* ─── Donate section: headline + intro + visible URL ─────────────── */
+
+/* Strip button chrome — donate link prints as plain bold text */
+.btn {
+  display: inline !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+/* Append the actual href after the donate button text.
+   Replace href="#" placeholder with the real URL before launch. */
+#donate-btn::after {
+  content: " (" attr(href) ")";
+  font-size: 9pt;
+  font-weight: 400;
+  color: #444 !important;
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────── */
+.site-footer {
+  border-top: 0.5pt solid #bbb !important;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  font-size: 9pt;
+}
+
+/* Print-only footer line appended below the site footer */
+body::after {
+  content: "Campaign website: https://routingaroundthestate.org | United for Iran: unitedforiran.org";
+  display: block;
+  margin-top: 1.5rem;
+  padding-top: 0.5rem;
+  border-top: 0.5pt solid #bbb;
+  font-size: 9pt;
+  color: #444 !important;
+  font-family: Georgia, 'Times New Roman', serif;
+}
